@@ -1,0 +1,460 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  avatar    String?
+  
+  // Aptos wallet info
+  aptosAddress String? @unique
+  
+  // Web3 Integration - Keyless Authentication
+  keylessAddress String? @unique
+  googleId       String? @unique
+  authMethod     AuthMethod @default(TRADITIONAL)
+  
+  // Game stats (original)
+  totalScore    Int      @default(0)
+  gamesPlayed   Int      @default(0)
+  achievements  String[] @default([])
+  
+  // Web3 - Crowdfunding Platform
+  stakedAmount     Decimal @default(0) @db.Decimal(20, 8)
+  governancePower  Decimal @default(0) @db.Decimal(20, 8)
+  totalContributed Decimal @default(0) @db.Decimal(20, 8)
+  totalProjectsCreated Int @default(0)
+  totalProjectsBacked  Int @default(0)
+  
+  // Relationships
+  gameScores      GameScore[]
+  transactions    Transaction[]
+  leaderboards    LeaderboardEntry[]
+  
+  // Web3 Relationships
+  projects        Project[] @relation("ProjectCreator")
+  contributions   Contribution[]
+  nftRewards      NFTReward[]
+  stakingRecords  StakingRecord[]
+  governanceVotes GovernanceVote[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("users")
+}
+
+// Web3 - Crowdfunding Projects
+model Project {
+  id          String  @id @default(cuid())
+  title       String
+  description String
+  category    String
+  imageUrl    String?
+  
+  // Financial details
+  targetAmount    Decimal @db.Decimal(20, 8)
+  currentAmount   Decimal @default(0) @db.Decimal(20, 8)
+  targetAmountUSD Decimal? @db.Decimal(20, 2)
+  
+  // Timeline
+  deadline   DateTime
+  startDate  DateTime @default(now())
+  status     ProjectStatus @default(ACTIVE)
+  
+  // Blockchain integration
+  creatorId         String
+  creatorAddress    String
+  blockchainId      String? @unique
+  transactionHash   String?
+  nftCollectionAddress String?
+  
+  // Features
+  nftRewardsEnabled Boolean @default(true)
+  stakingEnabled    Boolean @default(true)
+  governanceEnabled Boolean @default(true)
+  
+  // Analytics
+  uniqueContributors Int @default(0)
+  fundingVelocity   Decimal @default(0) @db.Decimal(10, 4)
+  
+  // Relationships
+  creator       User @relation("ProjectCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  contributions Contribution[]
+  nftRewards    NFTReward[]
+  milestones    Milestone[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("projects")
+}
+
+// Web3 - Contributions with NFT Rewards
+model Contribution {
+  id       String @id @default(cuid())
+  
+  // Basic details
+  userId    String
+  projectId String
+  amount    Decimal @db.Decimal(20, 8)
+  amountUSD Decimal? @db.Decimal(20, 2)
+  
+  // Blockchain details
+  contributorAddress String
+  transactionHash    String @unique
+  blockNumber        String?
+  status             ContributionStatus @default(PENDING)
+  
+  // NFT Reward
+  nftRewardId   String?  @unique
+  nftRewardTier NFTTier?
+  
+  // Features
+  sponsored   Boolean @default(false)
+  anonymous   Boolean @default(false)
+  
+  // Relationships
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project    Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  nftReward  NFTReward? @relation(fields: [nftRewardId], references: [id])
+  
+  createdAt DateTime @default(now())
+  
+  @@map("contributions")
+  @@index([userId, projectId])
+  @@index([projectId, amount])
+}
+
+// Web3 - NFT Rewards System
+model NFTReward {
+  id          String @id @default(cuid())
+  
+  // NFT Details
+  tokenAddress    String  @unique
+  tokenId         String
+  collectionAddress String
+  tier            NFTTier
+  metadataUri     String?
+  
+  // Ownership
+  ownerId         String
+  projectId       String
+  contributionId  String? @unique
+  
+  // Blockchain
+  mintTransactionHash String
+  transferrable       Boolean @default(true)
+  
+  // Metadata
+  name        String
+  description String
+  imageUrl    String?
+  attributes  Json?
+  
+  // Relationships
+  owner        User          @relation(fields: [ownerId], references: [id])
+  project      Project       @relation(fields: [projectId], references: [id])
+  contribution Contribution?
+  
+  createdAt DateTime @default(now())
+  
+  @@map("nft_rewards")
+}
+
+// Web3 - Staking System
+model StakingRecord {
+  id     String @id @default(cuid())
+  
+  // Staking details
+  userId        String
+  userAddress   String
+  amount        Decimal @db.Decimal(20, 8)
+  tier          StakingTier
+  lockPeriodDays Int
+  
+  // Timeline
+  stakedAt    DateTime @default(now())
+  unlocksAt   DateTime
+  unstakedAt  DateTime?
+  
+  // Blockchain
+  stakeTransactionHash   String
+  unstakeTransactionHash String?
+  
+  // Rewards
+  rewardsEarned Decimal @default(0) @db.Decimal(20, 8)
+  compounded    Boolean @default(false)
+  
+  // Status
+  status StakingStatus @default(ACTIVE)
+  
+  // Relationships
+  user User @relation(fields: [userId], references: [id])
+  
+  @@map("staking_records")
+}
+
+// Web3 - Governance System
+model Milestone {
+  id          String @id @default(cuid())
+  projectId   String
+  title       String
+  description String
+  
+  // Financial
+  requestedAmount Decimal @db.Decimal(20, 8)
+  approvedAmount  Decimal @default(0) @db.Decimal(20, 8)
+  
+  // Voting
+  proposedAt   DateTime @default(now())
+  votingEndsAt DateTime
+  status       MilestoneStatus @default(PROPOSED)
+  
+  // Results
+  votesFor     Int @default(0)
+  votesAgainst Int @default(0)
+  totalVotingPower Decimal @default(0) @db.Decimal(20, 8)
+  
+  // Blockchain
+  proposalTransactionHash String?
+  executeTransactionHash  String?
+  
+  // Relationships
+  project Project          @relation(fields: [projectId], references: [id])
+  votes   GovernanceVote[]
+  
+  @@map("milestones")
+}
+
+model GovernanceVote {
+  id          String @id @default(cuid())
+  
+  // Vote details
+  milestoneId String
+  voterId     String
+  voterAddress String
+  vote        Boolean // true for approve, false for reject
+  votingPower Decimal @db.Decimal(20, 8)
+  
+  // Blockchain
+  transactionHash String @unique
+  
+  // Timestamp
+  votedAt DateTime @default(now())
+  
+  // Relationships
+  milestone Milestone @relation(fields: [milestoneId], references: [id])
+  voter     User      @relation(fields: [voterId], references: [id])
+  
+  @@unique([milestoneId, voterId])
+  @@map("governance_votes")
+}
+
+model Game {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String?
+  category    String
+  minScore    Int    @default(0)
+  maxScore    Int    @default(1000)
+  isActive    Boolean @default(true)
+  
+  // Game metadata
+  metadata    Json?
+  
+  // Relationships
+  gameScores  GameScore[]
+  leaderboards LeaderboardEntry[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("games")
+}
+
+model GameScore {
+  id       String @id @default(cuid())
+  userId   String
+  gameId   String
+  score    Int
+  duration Int? // in seconds
+  
+  // Additional game data
+  gameData Json?
+  
+  // Relationships
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@map("game_scores")
+  @@index([userId, gameId])
+  @@index([gameId, score])
+}
+
+model Transaction {
+  id            String @id @default(cuid())
+  userId        String
+  txHash        String @unique
+  amount        String // Using string to handle large numbers
+  tokenType     String
+  transactionType TransactionType
+  status        TransactionStatus @default(PENDING)
+  
+  // Aptos specific data
+  aptosData     Json?
+  
+  // Relationships
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("transactions")
+  @@index([userId])
+  @@index([txHash])
+}
+
+model LeaderboardEntry {
+  id       String @id @default(cuid())
+  userId   String
+  gameId   String
+  score    Int
+  rank     Int
+  period   LeaderboardPeriod
+  
+  // Relationships
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("leaderboard_entries")
+  @@unique([userId, gameId, period])
+  @@index([gameId, period, score])
+}
+
+model Achievement {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String
+  category    String
+  points      Int    @default(0)
+  imageUrl    String?
+  
+  // Achievement conditions
+  conditions  Json
+  
+  isActive Boolean @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("achievements")
+}
+
+model Config {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("config")
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  REWARD
+  PURCHASE
+  TRANSFER
+  
+  // Web3 Crowdfunding
+  PROJECT_CREATION
+  PROJECT_CONTRIBUTION
+  NFT_MINT
+  STAKING
+  UNSTAKING
+  GOVERNANCE_VOTE
+}
+
+enum TransactionStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+  CANCELLED
+}
+
+enum LeaderboardPeriod {
+  DAILY
+  WEEKLY
+  MONTHLY
+  ALL_TIME
+}
+
+// Web3 Enums
+enum AuthMethod {
+  TRADITIONAL
+  KEYLESS_GOOGLE
+  WALLET_CONNECT
+}
+
+enum ProjectStatus {
+  DRAFT
+  ACTIVE
+  FUNDED
+  CANCELLED
+  COMPLETED
+}
+
+enum ContributionStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+  REFUNDED
+}
+
+enum NFTTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+enum StakingTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+enum StakingStatus {
+  ACTIVE
+  UNLOCKED
+  UNSTAKED
+  EMERGENCY_UNSTAKED
+}
+
+enum MilestoneStatus {
+  PROPOSED
+  VOTING
+  APPROVED
+  REJECTED
+  EXECUTED
+}

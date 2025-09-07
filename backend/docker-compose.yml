@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: aptoscade_postgres
+    environment:
+      POSTGRES_DB: aptoscade_db
+      POSTGRES_USER: aptoscade_user
+      POSTGRES_PASSWORD: aptoscade_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - aptoscade_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: aptoscade_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - aptoscade_network
+
+  backend:
+    build: .
+    container_name: aptoscade_backend
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://aptoscade_user:aptoscade_password@postgres:5432/aptoscade_db
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
+      APTOS_NETWORK: devnet
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - aptoscade_network
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  aptoscade_network:
+    driver: bridge

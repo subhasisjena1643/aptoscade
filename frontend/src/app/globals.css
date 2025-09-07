@@ -1,0 +1,854 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@400;700;900&display=swap');
+@import "tailwindcss";
+
+:root {
+  --retro-bg: #1a1a2e;
+  --retro-surface: #16213e;
+  --retro-border: #0f3460;
+  --retro-accent: #e94560;
+  --retro-secondary: #f39c12;
+  --retro-success: #2ecc71;
+  --retro-warning: #f1c40f;
+  --retro-text: #ecf0f1;
+  --retro-text-dim: #bdc3c7;
+  --window-shadow: rgba(0, 0, 0, 0.8);
+}
+
+/* Tailwind theme variables */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--retro-bg);
+  color: var(--retro-text);
+  font-family: 'Orbitron', monospace;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Retro CRT Effect */
+.crt-effect {
+  position: relative;
+}
+
+.crt-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    transparent 50%,
+    rgba(0, 255, 0, 0.03) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* Retro Window Styling */
+.retro-window {
+  background: var(--retro-surface);
+  border: 3px solid var(--retro-border);
+  border-top: 3px solid #4a90e2;
+  border-left: 3px solid #4a90e2;
+  border-right: 3px solid #2c3e50;
+  border-bottom: 3px solid #2c3e50;
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.1),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.3),
+    4px 4px 8px var(--window-shadow);
+}
+
+.retro-window-header {
+  background: linear-gradient(90deg, #4a90e2 0%, #357abd 100%);
+  border-bottom: 2px solid var(--retro-border);
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  color: white;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.retro-window-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.retro-btn {
+  width: 16px;
+  height: 16px;
+  border: 2px outset #c0c0c0;
+  background: #c0c0c0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: bold;
+  color: black;
+}
+
+.retro-btn:hover {
+  background: #d0d0d0;
+}
+
+.retro-btn:active {
+  border: 2px inset #c0c0c0;
+}
+
+.retro-btn.close { background: #ff6b6b; }
+.retro-btn.minimize { background: #ffd93d; }
+.retro-btn.maximize { background: #6bcf7f; }
+
+/* Retro Button Styling */
+.retro-button {
+  background: linear-gradient(145deg, #4a90e2, #357abd);
+  border: 3px outset #4a90e2;
+  color: white;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  padding: 12px 20px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.1s ease;
+  box-shadow:
+    2px 2px 4px rgba(0, 0, 0, 0.3),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.retro-button:hover {
+  background: linear-gradient(145deg, #5ba0f2, #4080cd);
+  transform: translateY(-1px);
+}
+
+.retro-button:active {
+  border: 3px inset #4a90e2;
+  transform: translateY(1px);
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.retro-button.accent {
+  background: linear-gradient(145deg, var(--retro-accent), #c73650);
+  border-color: var(--retro-accent);
+}
+
+.retro-button.secondary {
+  background: linear-gradient(145deg, var(--retro-secondary), #e67e22);
+  border-color: var(--retro-secondary);
+}
+
+/* Retro Input Styling */
+.retro-input {
+  background: #2c3e50;
+  border: 2px inset #34495e;
+  color: var(--retro-text);
+  font-family: 'Orbitron', monospace;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.retro-input:focus {
+  outline: none;
+  box-shadow: inset 0 0 4px rgba(74, 144, 226, 0.5);
+}
+
+/* Retro Progress Bar */
+.retro-progress {
+  background: #2c3e50;
+  border: 2px inset #34495e;
+  height: 20px;
+  overflow: hidden;
+}
+
+.retro-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2ecc71, #27ae60);
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.retro-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.1) 2px,
+    rgba(255, 255, 255, 0.1) 4px
+  );
+}
+
+/* Retro Panel */
+.retro-panel {
+  background: var(--retro-surface);
+  border: 2px solid var(--retro-border);
+  border-top: 2px solid #4a90e2;
+  border-left: 2px solid #4a90e2;
+  padding: 16px;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Pixelated Images */
+img, canvas, video {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Retro Scrollbar */
+::-webkit-scrollbar {
+  width: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2c3e50;
+  border: 2px inset #34495e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(145deg, #4a90e2, #357abd);
+  border: 2px outset #4a90e2;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(145deg, #5ba0f2, #4080cd);
+}
+
+/* Retro Text Effects */
+.pixel-text {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.glow-text {
+  text-shadow:
+    0 0 5px currentColor,
+    0 0 10px currentColor,
+    0 0 15px currentColor;
+}
+
+/* Retro Grid Background */
+.retro-grid {
+  background-image:
+    linear-gradient(rgba(74, 144, 226, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 144, 226, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Retro Loading Animation */
+@keyframes retro-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.retro-blink {
+  animation: retro-blink 1s infinite;
+}
+
+/* Retro Scanlines */
+.scanlines {
+  position: relative;
+}
+
+.scanlines::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    transparent 50%,
+    rgba(0, 0, 0, 0.1) 50%
+  );
+  background-size: 100% 2px;
+  pointer-events: none;
+}
+
+/* Retro Animations */
+@keyframes retro-pulse {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(74, 144, 226, 0.8);
+  }
+}
+
+.retro-pulse {
+  animation: retro-pulse 2s infinite;
+}
+
+/* Advanced Retro Effects */
+@keyframes retro-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+  51% { opacity: 1; }
+  52% { opacity: 0.9; }
+  53% { opacity: 1; }
+}
+
+.retro-flicker {
+  animation: retro-flicker 0.15s infinite linear;
+}
+
+@keyframes retro-glow-pulse {
+  0%, 100% {
+    text-shadow:
+      0 0 5px currentColor,
+      0 0 10px currentColor,
+      0 0 15px currentColor,
+      0 0 20px currentColor;
+  }
+  50% {
+    text-shadow:
+      0 0 2px currentColor,
+      0 0 5px currentColor,
+      0 0 8px currentColor,
+      0 0 12px currentColor;
+  }
+}
+
+.retro-glow-pulse {
+  animation: retro-glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes retro-slide-in {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.retro-slide-in {
+  animation: retro-slide-in 0.5s ease-out;
+}
+
+@keyframes retro-zoom-in {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.retro-zoom-in {
+  animation: retro-zoom-in 0.3s ease-out;
+}
+
+/* Retro Terminal Cursor */
+@keyframes retro-cursor {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.retro-cursor::after {
+  content: '█';
+  animation: retro-cursor 1s infinite;
+  color: #00ff00;
+}
+
+/* Retro Data Stream */
+@keyframes retro-data-stream {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+.retro-data-stream {
+  animation: retro-data-stream 3s linear infinite;
+}
+
+/* Retro Holographic Effect */
+.retro-hologram {
+  position: relative;
+  background: linear-gradient(45deg,
+    rgba(0, 255, 255, 0.1),
+    rgba(255, 0, 255, 0.1),
+    rgba(0, 255, 0, 0.1)
+  );
+  background-size: 200% 200%;
+  animation: retro-hologram-shift 4s ease-in-out infinite;
+}
+
+@keyframes retro-hologram-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.retro-hologram::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 255, 0.1) 2px,
+    rgba(0, 255, 255, 0.1) 4px
+  );
+  pointer-events: none;
+}
+
+/* Retro Screen Distortion */
+.retro-distortion {
+  position: relative;
+}
+
+.retro-distortion::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.03) 50%,
+    transparent 100%
+  );
+  animation: retro-distortion-sweep 8s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes retro-distortion-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Enhanced Button Hover Effects */
+.retro-button:hover {
+  background: linear-gradient(145deg, #5ba0f2, #4080cd);
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    0 0 15px rgba(74, 144, 226, 0.5),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.retro-button:hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  animation: retro-button-shine 0.6s ease-out;
+}
+
+@keyframes retro-button-shine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Retro Loading Bars */
+.retro-loading-bar {
+  background: #2c3e50;
+  border: 2px inset #34495e;
+  height: 20px;
+  overflow: hidden;
+  position: relative;
+}
+
+.retro-loading-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    #4a90e2 0%,
+    #4a90e2 10%,
+    #357abd 10%,
+    #357abd 20%
+  );
+  background-size: 20px 100%;
+  animation: retro-loading-progress 2s linear infinite;
+}
+
+@keyframes retro-loading-progress {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Pixel Rain Animation */
+@keyframes retro-pixel-fall {
+  0% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+/* Enhanced Background Animations */
+@keyframes retro-float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes retro-grid-move {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(50px, 50px);
+  }
+}
+
+@keyframes retro-data-scroll {
+  0% {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(100vw);
+    opacity: 0;
+  }
+}
+
+/* Layout and Scrolling Fixes */
+.main-content-area {
+  margin-left: 6rem; /* Space for sidebar */
+  margin-right: 17rem; /* Space for MCP panel */
+  padding: 1rem;
+  min-height: 100vh;
+  padding-bottom: 4rem; /* Space for taskbar */
+}
+
+/* Ensure fixed elements don't interfere with scrolling */
+.fixed-sidebar {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  width: 4rem;
+  z-index: 40;
+  height: auto;
+  max-height: calc(100vh - 12rem); /* Leave space for system panel */
+}
+
+.fixed-mcp-panel {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: 16rem;
+  z-index: 40;
+}
+
+.fixed-system-panel {
+  position: fixed;
+  bottom: 5rem; /* Increased from 4rem to create more space */
+  left: 1rem;
+  width: 4rem;
+  z-index: 30;
+}
+
+/* Prevent content overlap during scroll */
+@media (max-width: 1024px) {
+  .main-content-area {
+    margin-left: 5rem;
+    margin-right: 1rem;
+  }
+
+  .fixed-mcp-panel {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content-area {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+  .fixed-sidebar {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .fixed-system-panel {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+}
+
+/* Retro Slider */
+.retro-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #001122 0%, #003366 100%);
+  border: 1px solid #00ffff;
+  border-radius: 2px;
+  outline: none;
+  box-shadow: inset 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+.retro-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: #00ffff;
+  border: 1px solid #ffffff;
+  border-radius: 2px;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.8);
+}
+
+.retro-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: #00ffff;
+  border: 1px solid #ffffff;
+  border-radius: 2px;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.8);
+}
+
+/* Retro Checkbox */
+.retro-checkbox {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(90deg, #001122 0%, #003366 100%);
+  border: 1px solid #00ffff;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  box-shadow: inset 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+.retro-checkbox:checked {
+  background: linear-gradient(90deg, #00ffff 0%, #0099cc 100%);
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.8);
+}
+
+.retro-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  color: #000000;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Enhanced Glitch Animation Keyframes */
+@keyframes glitch-line {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  20% {
+    transform: translateX(0%);
+    opacity: 0.8;
+  }
+  30% {
+    transform: translateX(20%);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateX(50%);
+    opacity: 1;
+  }
+  70% {
+    transform: translateX(80%);
+    opacity: 0.4;
+  }
+  90% {
+    transform: translateX(100%);
+    opacity: 0.2;
+  }
+  100% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+@keyframes glitch-rgb {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+@keyframes glitch-skew {
+  0% {
+    transform: skew(0deg);
+  }
+  10% {
+    transform: skew(-2deg);
+  }
+  20% {
+    transform: skew(2deg);
+  }
+  30% {
+    transform: skew(-1deg);
+  }
+  40% {
+    transform: skew(1deg);
+  }
+  50% {
+    transform: skew(-3deg);
+  }
+  60% {
+    transform: skew(3deg);
+  }
+  70% {
+    transform: skew(-1deg);
+  }
+  80% {
+    transform: skew(1deg);
+  }
+  90% {
+    transform: skew(-2deg);
+  }
+  100% {
+    transform: skew(0deg);
+  }
+}
+
+/* Wallet Modal Scan Animation */
+@keyframes scan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Glitch text corruption effect */
+.glitch-text {
+  position: relative;
+  animation: glitch-skew 0.3s infinite linear alternate-reverse;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch-text::before {
+  animation: glitch-rgb 0.3s infinite linear alternate-reverse;
+  color: #ff0000;
+  z-index: -1;
+}
+
+.glitch-text::after {
+  animation: glitch-rgb 0.3s infinite linear alternate-reverse;
+  color: #00ffff;
+  z-index: -2;
+}

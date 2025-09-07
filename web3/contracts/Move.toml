@@ -1,0 +1,17 @@
+[package]
+name = "HackathonContract"
+version = "1.0.0"
+authors = ["Hackathon Team"]
+
+[addresses]
+hackathon = "0x762779f87715b377314b79420b866ca7edef615a86d0d998f733e3f5c7113f89"
+
+[dev-addresses]
+hackathon = "0x762779f87715b377314b79420b866ca7edef615a86d0d998f733e3f5c7113f89"
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-core.git"
+rev = "mainnet"
+subdir = "aptos-move/framework/aptos-framework"
+
+[dev-dependencies]

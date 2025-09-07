@@ -1,0 +1,47 @@
+{
+  "name": "aptoscade",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-Powered DeFi Gaming Platform - Gamify DeFi through AI-automated yield farming and cross-chain arbitrage",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "mcp:dev": "node mcp-server/index.js"
+  },
+  "dependencies": {
+    "@aptos-labs/ts-sdk": "^3.1.3",
+    "@aptos-labs/wallet-adapter-ant-design": "^5.1.3",
+    "@aptos-labs/wallet-adapter-react": "^7.0.4",
+    "@modelcontextprotocol/sdk": "^1.17.1",
+    "@react-three/drei": "^10.6.1",
+    "@react-three/fiber": "^9.3.0",
+    "animejs": "^3.2.1",
+    "clsx": "^2.1.1",
+    "dotenv": "^17.2.1",
+    "framer-motion": "^12.23.12",
+    "got": "^11.8.6",
+    "lucide-react": "^0.536.0",
+    "next": "^15.5.2",
+    "phaser": "^3.90.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "socket.io-client": "^4.8.1",
+    "tailwind-merge": "^3.3.1",
+    "three": "^0.159.0",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/animejs": "^3.1.13",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.4.5",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
